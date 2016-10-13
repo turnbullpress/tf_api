@@ -1,9 +1,13 @@
+data "aws_vpc" "environment" {
+  id = "${var.vpc_id}"
+}
+
 resource "aws_instance" "api" {
   ami           = "${lookup(var.ami, var.region)}"
   instance_type = "${var.instance_type}"
   key_name      = "${var.key_name}"
-  subnet_id     = "${element(module.vpc.public_subnet_ids, 1)}"
-  user_data     = "${file("files/api_bootstrap.sh")}"
+  subnet_id     = "${element(var.public_subnet_ids, 1)}"
+  user_data     = "${file("${path.module}/files/api_bootstrap.sh")}"
   vpc_security_group_ids = [
     "${aws_security_group.api_host_sg.id}"
   ]
@@ -15,7 +19,7 @@ resource "aws_instance" "api" {
 
 resource "aws_elb" "api" {
   name                = "${var.environment}-api-elb"
-  subnets             = ["${element(module.vpc.public_subnet_ids, 1)}"]
+  subnets             = ["${element(var.public_subnet_ids, 1)}"]
   security_groups     = ["${aws_security_group.api_inbound_sg.id}"]
   listener {
     instance_port     = 80
@@ -29,11 +33,11 @@ resource "aws_elb" "api" {
 resource "aws_security_group" "api_inbound_sg" {
   name        = "${var.environment}-api_inbound"
   description = "Allow API from Anywhere"
-  vpc_id      = "${module.vpc.vpc_id}"
+  vpc_id      = "${data.aws_vpc.environment.id}"
 
   ingress {
-    from_port   = 1234
-    to_port     = 1234
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -55,8 +59,8 @@ resource "aws_security_group" "api_inbound_sg" {
 
 resource "aws_security_group" "api_host_sg" {
   name        = "${var.environment}-api_host"
-  description = "Allow SSH & HTTP to api hosts"
-  vpc_id      = "${module.vpc.vpc_id}"
+  description = "Allow SSH and HTTP to api hosts"
+  vpc_id      = "${data.aws_vpc.environment.id}"
 
   ingress {
     from_port   = 22
@@ -67,10 +71,10 @@ resource "aws_security_group" "api_host_sg" {
 
   # HTTP access from the VPC
   ingress {
-    from_port   = 1234
-    to_port     = 1234
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["${module.vpc.vpc_cidr}"]
+    cidr_blocks = ["${data.aws_vpc.environment.cidr_block}"]
   }
 
   egress {
