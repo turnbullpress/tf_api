@@ -17,7 +17,7 @@ resource "aws_instance" "api" {
     Name = "${var.environment}-api-${count.index}"
   }
 
-  count = 5
+  count = "${var.api_server_count}"
 }
 
 resource "aws_elb" "api" {
@@ -36,7 +36,7 @@ resource "aws_elb" "api" {
 }
 
 resource "aws_security_group" "api_inbound_sg" {
-  name        = "${var.environment}-api_inbound"
+  name        = "${var.environment}-api-inbound"
   description = "Allow API from Anywhere"
   vpc_id      = "${data.aws_vpc.environment.id}"
 
@@ -60,10 +60,14 @@ resource "aws_security_group" "api_inbound_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags {
+    Name        = "${var.environment}-api-inbound-sg"
+  }
 }
 
 resource "aws_security_group" "api_host_sg" {
-  name        = "${var.environment}-api_host"
+  name        = "${var.environment}-api-host"
   description = "Allow SSH and HTTP to api hosts"
   vpc_id      = "${data.aws_vpc.environment.id}"
 
@@ -71,7 +75,7 @@ resource "aws_security_group" "api_host_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${data.aws_vpc.environment.cidr_block}"]
   }
 
   # HTTP access from the VPC
@@ -94,5 +98,9 @@ resource "aws_security_group" "api_host_sg" {
     to_port     = 0
     protocol    = "icmp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags {
+    Name        = "${var.environment}-api-host-sg"
   }
 }

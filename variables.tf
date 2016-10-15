@@ -26,3 +26,7 @@ variable "public_subnet_ids" {
 variable "private_subnet_ids" {
   type = "list"
 }
+
+variable "api_server_count" {
+  default = 5
+}
