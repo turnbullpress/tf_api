@@ -5,4 +5,3 @@ output "api_elb_address" {
 output "api_host_addresses" {
   value = ["${aws_instance.api.*.private_ip}"]
 }
-

@@ -8,25 +8,30 @@ resource "aws_instance" "api" {
   key_name      = "${var.key_name}"
   subnet_id     = "${element(var.public_subnet_ids, 1)}"
   user_data     = "${file("${path.module}/files/api_bootstrap.sh")}"
+
   vpc_security_group_ids = [
-    "${aws_security_group.api_host_sg.id}"
+    "${aws_security_group.api_host_sg.id}",
   ]
+
   tags {
     Name = "${var.environment}-api-${count.index}"
   }
+
   count = 5
 }
 
 resource "aws_elb" "api" {
-  name                = "${var.environment}-api-elb"
-  subnets             = ["${element(var.public_subnet_ids, 1)}"]
-  security_groups     = ["${aws_security_group.api_inbound_sg.id}"]
+  name            = "${var.environment}-api-elb"
+  subnets         = ["${element(var.public_subnet_ids, 1)}"]
+  security_groups = ["${aws_security_group.api_inbound_sg.id}"]
+
   listener {
     instance_port     = 80
     instance_protocol = "http"
     lb_port           = 80
     lb_protocol       = "http"
   }
+
   instances = ["${aws_instance.api.*.id}"]
 }
 
@@ -91,4 +96,3 @@ resource "aws_security_group" "api_host_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
