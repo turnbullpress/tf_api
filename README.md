@@ -5,7 +5,7 @@ A lightweight API service module for The Terraform Book.
 ## Usage
 
 ```hcl
-variable "api_server_count" {
+variable "api_instance_count" {
   default = 5
 }
 
@@ -17,7 +17,7 @@ module "api" {
   private_subnet_ids = "${module.vpc.private_subnet_ids}"
   region             = "${var.region}"
   key_name           = "${var.key_name}"
-  api_server_count   = "${var.api_server_count}"
+  api_instance_count = "${var.api_instance_count}"
 }
 
 output "api_elb_address" {

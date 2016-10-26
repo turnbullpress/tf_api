@@ -17,7 +17,7 @@ resource "aws_instance" "api" {
     Name = "${var.environment}-api-${count.index}"
   }
 
-  count = "${var.api_server_count}"
+  count = "${var.api_instance_count}"
 }
 
 resource "aws_elb" "api" {

@@ -39,7 +39,7 @@ variable "vpc_id" {
   description = "The VPC ID to launch in"
 }
 
-variable "api_server_count" {
+variable "api_instance_count" {
   default     = 5
   description = "The number of API instances to launch."
 }
