@@ -32,7 +32,7 @@ output "api_host_addresses" {
 Assumes you're building your API service inside a VPC created from [this
 module](https://github.com/turnbullpublishing/tf_vpc).
 
-See `variables.tf` for additional configurable variables.
+See `interface.tf` for additional configurable variables.
 
 ## License
 
