@@ -43,3 +43,11 @@ variable "api_instance_count" {
   default     = 5
   description = "The number of API instances to launch."
 }
+
+output "api_elb_address" {
+  value = "${aws_elb.api.dns_name}"
+}
+
+output "api_host_addresses" {
+  value = ["${aws_instance.api.*.private_ip}"]
+}
