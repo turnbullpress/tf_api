@@ -32,7 +32,7 @@ resource "aws_elb" "api" {
     lb_protocol       = "http"
   }
 
-  instances = "${aws_instance.api.*.id}"
+  instances = ["${aws_instance.api.*.id}"]
 }
 
 resource "aws_security_group" "api_inbound_sg" {
