@@ -42,7 +42,7 @@ EOF
 
 # Create server flags
 cat >/tmp/json_server_flags << EOF
-JSON_SERVER_FLAGS='--watch /opt/json-server/index.js --static /opt/json-server/public --routes /opt/json-server/routes.json --port 80'
+JSON_SERVER_FLAGS='--watch /opt/json-server/index.js --static /opt/json-server/public --routes /opt/json-server/routes.json --host 0.0.0.0 --port 80'
 EOF
 
 # Write systemd service
