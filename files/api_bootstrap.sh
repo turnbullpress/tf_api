@@ -55,7 +55,7 @@ After=network-online.target
 [Service]
 EnvironmentFile=-/etc/default/json-server
 Restart=on-failure
-ExecStart=/usr/local/bin/json-server $JSON_SERVER_FLAGS
+ExecStart=/usr/bin/json-server $JSON_SERVER_FLAGS
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGINT
 
