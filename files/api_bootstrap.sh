@@ -23,7 +23,7 @@ EOF
 # Write routes.json
 sudo cat >/opt/json-server/routes.json << "EOF"
 {
-  "/api/": "/"
+  "/api/*": "/$1"
 }
 
 EOF
